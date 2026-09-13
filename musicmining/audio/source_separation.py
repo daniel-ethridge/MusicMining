@@ -54,7 +54,7 @@ https://docs.pytorch.org/audio/stable/tutorials/hybrid_demucs_tutorial.html
 
 
 def _source_separation(
-    model: torch.Module,
+    model: any,
     audio: np.ndarray,
     sr: float,
     segment: float = 10.0,

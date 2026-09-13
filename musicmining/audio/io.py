@@ -1,20 +1,22 @@
 """I/O for audio files"""
 
+from typing import Optional
+
 import librosa
 import numpy as np
-from scipy.io.wavfile import write as wavwrite
+import scipy.io.wavfile as wav_file
 
 
-def load(path: str, *, to_mono_float32: bool = True, **kwargs):
+def load(path: str, sr: Optional[int] = 22050, **kwargs):
     """
-    Load an audio file.
+    Load an audio file. This is a wrapper around librosa.load.
 
     Parameters
     ----------
     path : str
         Path to audio file.
-    to_mono_float32 : bool, optional
-        Convert to float32 format and to mono. Defaults to True.
+    sr : int, optional
+        Target sample rate. If None, uses the native sampling rate. Defaults to 22050
     **kwargs
         Additional arguments passed to librosa.load.
 
@@ -24,26 +26,7 @@ def load(path: str, *, to_mono_float32: bool = True, **kwargs):
         (audio data, sample rate)
     """
     # Initial load
-    data, sr = librosa.load(path, **kwargs)
-
-    if not to_mono_float32:
-        return data, sr
-
-    # ensure mono
-    data = librosa.to_mono(data)
-
-    # convert
-    if data.dtype == np.uint8:
-        data -= 1 << 7
-        data /= 1 << 7
-    elif data.dtype == np.int16:
-        data /= 1 << 15
-    elif data.dtype == np.int32:
-        data /= 1 << 31
-
-    # return
-    data = np.float32(data)
-    return data, sr
+    return librosa.load(path, sr=sr, **kwargs)
 
 
 def write_wav(filename: str, sr: int, data: np.ndarray):
@@ -59,4 +42,4 @@ def write_wav(filename: str, sr: int, data: np.ndarray):
     data : numpy ndarray
         A 1-D or 2-D NumPy array of either integer or float data-type.
     """
-    wavwrite(filename, sr, data)
+    wav_file.write(filename, sr, data)

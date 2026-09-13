@@ -3,36 +3,67 @@ import pytest
 
 from musicmining.audio import io
 
+rates = [11025, 22050, 44100, 48000]
+depths = [8, 16, 32, 64]
 
-@pytest.mark.parametrize("shift, type_func", (
-    [8, np.uint8],
-    [16, np.int16],
-    [32, np.int32],
-    [32, np.float32]
-))
-@pytest.mark.parametrize("sr", ([22050, 44100, 11025]))
-def test_load(shift, type_func, sr):
-    data = np.zeros((sr, 2))
 
-    if type_func != np.float32:
-        data[:, 0] = np.random.random(sr) * (1 << shift)
-        data[:, 1] = np.random.random(sr) * (1 << shift)
-    else:
-        data[:, 0] = np.random.random(sr)
-        data[:, 1] = np.random.random(sr)
+@pytest.fixture(params=rates)
+def sample_rate(request):
+    return request.param
 
-    for n in range(data.shape[1]):
-        for i, val in enumerate(data[:, n]):
-            if val > (1 << (shift -1)):
-                data[i][n] /= 2
 
-    data = type_func(data)
-    io.write_wav("./tests/test.wav", sr, data)
+@pytest.fixture(params=depths)
+def bit_depth(request):
+    return request.param
 
-    audio, fs = io.load("./tests/test.wav", to_mono_float32=True, sr=sr)
 
-    assert fs == sr
-    assert audio.dtype == np.float32
-    assert audio.shape == (sr,)
-    assert np.min(audio) >= -1
-    assert np.max(audio) <= 1
+def generate_sine_wav(rate, depth):
+    length = 5
+    t = np.linspace(0, length, length * rate, endpoint=False)
+    y = np.sin(2 * np.pi * t) + 0.7 * np.sin(3 * np.pi * t)
+    y /= np.max(np.abs(y))
+
+    assert len(y) == length * rate
+
+    if depth == 8:
+        y += 1
+        y *= 1 << 7
+        y = np.uint8(y)
+        assert 255 == pytest.approx(np.max(y))
+        assert 0 == pytest.approx(np.min(y))
+        assert y.dtype == np.uint8
+
+    elif depth == 16:
+        y *= 1 << 15
+        y = np.int16(y)
+        assert 32767 == pytest.approx(np.max(y))
+        assert -32768 == pytest.approx(np.min(y))
+        assert y.dtype == np.int16
+
+    elif depth == 32:
+        y = np.float32(y)
+    elif depth == 64:
+        y = np.float64(y)
+
+    return y
+
+
+def test_write(tmp_path, sample_rate, bit_depth):
+    y = generate_sine_wav(sample_rate, bit_depth)
+    io.write_wav(f"{tmp_path}/temp_audio.wav", sample_rate, y)
+
+
+def test_load(tmp_path, sample_rate, bit_depth):
+    audio_path = f"{tmp_path}/temp_audio.wav"
+
+    y = generate_sine_wav(sample_rate, bit_depth)
+    io.write_wav(audio_path, sample_rate, y)
+
+    _, sr = io.load(audio_path)
+    assert sr == 22050
+
+    _, sr = io.load(audio_path, sr=None)
+    assert sr == sample_rate
+
+    _, sr = io.load(audio_path, sr=44100)
+    assert sr == 44100

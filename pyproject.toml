@@ -6,6 +6,11 @@ version = "0.1.0"
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::DeprecationWarning:audioread.*",  # Cannot control the deprecations
+]
+
 [tool.ruff]
 line-length=119
 exclude = [
@@ -22,6 +27,7 @@ ignore = [
     "D400",  # Relax on the first line punctuation
     "D413",  # Blank line at end of docstring is unecessary
     "D415",  # Relax on the first line punctuation
+    "SIM108",  # Forced ternary operators are not the answer
 ]
 
 [tool.ruff.lint.pydocstyle]

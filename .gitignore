@@ -12,3 +12,5 @@ requirements.txt
 *.egg-info/
 dist/
 build/
+.env
+uv.lock

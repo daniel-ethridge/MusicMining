@@ -1,6 +1,28 @@
 [project]
 name = "musicmining"
-version = "0.1.0"
+description = "Python package for audio and music analyses"
+license = "ISC"
+license-files = ["LICENSE.md"]
+readme = "README.md"
+dependencies = [
+    "essentia==2.1b6.dev1389",
+    "librosa==1.0.0",
+    "numpy==2.5.3",
+    "opensmile==2.6.0",
+    "pandas==3.0.5",
+    "scipy==1.18.1",
+    "sqlalchemy==2.0.52",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=9.1.1",
+]
+source-separation = [
+    "torch>=2.13.0",
+    "torchaudio>=2.11.0",
+]
 
 [build-system]
 requires = ["setuptools"]
@@ -11,10 +33,18 @@ filterwarnings = [
     "ignore::DeprecationWarning:audioread.*",  # Cannot control the deprecations
 ]
 
+[tool.setuptools.dynamic]
+version = { attr = "musicmining.__version__" }
+
+[tool.setuptools.packages.find]
+include= ["musicmining*"]
+
 [tool.ruff]
 line-length=119
 exclude = [
-    "tests"
+    "tests",
+    "test_venv",
+    "scratch"
 ]
 
 [tool.ruff.lint]

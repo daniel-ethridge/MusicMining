@@ -5,7 +5,7 @@ import numpy as np
 from scipy.io.wavfile import write as wavwrite
 
 
-def load(path: str, *, to_mono_float32: bool=True, **kwargs):
+def load(path: str, *, to_mono_float32: bool = True, **kwargs):
     """
     Load an audio file.
 
@@ -33,13 +33,13 @@ def load(path: str, *, to_mono_float32: bool=True, **kwargs):
     data = librosa.to_mono(data)
 
     # convert
-    if (data.dtype == np.uint8):
-        data -= (1 << 7)
-        data /= (1 << 7)
-    elif (data.dtype == np.int16):
-        data /= (1 << 15)
-    elif (data.dtype == np.int32):
-        data /= (1 << 31)
+    if data.dtype == np.uint8:
+        data -= 1 << 7
+        data /= 1 << 7
+    elif data.dtype == np.int16:
+        data /= 1 << 15
+    elif data.dtype == np.int32:
+        data /= 1 << 31
 
     # return
     data = np.float32(data)

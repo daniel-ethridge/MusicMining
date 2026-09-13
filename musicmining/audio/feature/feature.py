@@ -12,6 +12,7 @@ from musicmining.util.exceptions import ParameterError
 
 class Feat(Flag):
     """Feature bitmask."""
+
     NONE = 0
     DYNAMICS = 1 << 0
     EXPRESSIVITY = 1 << 1
@@ -23,13 +24,14 @@ class Feat(Flag):
 
 
 def extract_feats(
-        audio: np.ndarray,
-        sr: int,
-        *,
-        file_path: Optional[str] = None,
-        hop_size: int=1024,
-        block_size: int=4096,
-        feat_to_exclude: Feat = Feat.NONE):
+    audio: np.ndarray,
+    sr: int,
+    *,
+    file_path: Optional[str] = None,
+    hop_size: int = 1024,
+    block_size: int = 4096,
+    feat_to_exclude: Feat = Feat.NONE,
+):
     """
     Extract features from audio.
 
@@ -80,5 +82,3 @@ def extract_feats(
         concat_list.append(feat.vocal_from_file(file_path, sr, hop_size=hop_size, block_size=block_size))
 
     return pd.concat(concat_list, axis=1)
-
-

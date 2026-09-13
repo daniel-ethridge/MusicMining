@@ -102,8 +102,6 @@ def harmony_from_audio(data, sr, *, block_size=4096):
     return pd.DataFrame(feature_data)
 
 
-
-
 # def harmony(
 #     file_path,
 #     *,

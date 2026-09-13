@@ -1,6 +1,5 @@
 """Audio effects"""
 
-
 import numpy as np
 from librosa.effects import pitch_shift as lib_pitch_shift
 
@@ -30,7 +29,9 @@ def pitch_shift(y: np.ndarray, *, sr: float, n_steps: float, **kwargs) -> np.nda
     return lib_pitch_shift(y, sr=sr, n_steps=n_steps, **kwargs)
 
 
-def pitch_shift_group(y: np.ndarray, *, sr: float, n_steps: np.ndarray, return_original: bool=False, **kwargs) -> dict:
+def pitch_shift_group(
+    y: np.ndarray, *, sr: float, n_steps: np.ndarray, return_original: bool = False, **kwargs
+) -> dict:
     """
     Shift the pitch of a waveform multiple times.
 

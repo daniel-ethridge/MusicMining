@@ -72,7 +72,7 @@ def expressivity_from_audio(data, sr, *, hop_size=1024, block_size=4096):
     # Vibrato
     num_frames = len(melody)
     duration_of_audio = len(data) / sr
-    p_fs = num_frames/duration_of_audio
+    p_fs = num_frames / duration_of_audio
     vibrato = es.Vibrato(sampleRate=p_fs)
     vib_frq, vib_extend = vibrato(melody)
     vib_frq = np.array(vib_frq)

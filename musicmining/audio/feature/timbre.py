@@ -32,12 +32,7 @@ def timbre_from_file(file_path: str, sr: int, hop_size=1024, block_size=4096):
     return timbre_from_audio(audio, rate, hop_size=hop_size, block_size=block_size)
 
 
-def timbre_from_audio(
-        data: np.ndarray,
-        sr: int,
-        *,
-        hop_size: int=1024,
-        block_size: int=4096):
+def timbre_from_audio(data: np.ndarray, sr: int, *, hop_size: int = 1024, block_size: int = 4096):
     """
     Extract timbre features from audio.
 
@@ -62,39 +57,29 @@ def timbre_from_audio(
     feature_data = {}
 
     # spectral centroid
-    spec_cent = feat.spectral_centroid(
-        y=data, sr=sr, hop_length=hop_size, n_fft=block_size
-    ).flatten()
+    spec_cent = feat.spectral_centroid(y=data, sr=sr, hop_length=hop_size, n_fft=block_size).flatten()
     feature_data["timbre_avg_spec_cent"] = [np.mean(spec_cent)]
     feature_data["timbre_std_spec_cent"] = [np.std(spec_cent)]
 
     # spectral bandwidth
-    spec_band = feat.spectral_bandwidth(
-        y=data, sr=sr, hop_length=hop_size, n_fft=block_size
-    ).flatten()
+    spec_band = feat.spectral_bandwidth(y=data, sr=sr, hop_length=hop_size, n_fft=block_size).flatten()
     feature_data["timbre_avg_spec_band"] = [np.mean(spec_band)]
     feature_data["timbre_std_spec_band"] = [np.std(spec_band)]
 
     # spectral contrast
-    spec_cont = feat.spectral_contrast(
-        y=data, sr=sr, hop_length=hop_size, n_fft=block_size
-    )
+    spec_cont = feat.spectral_contrast(y=data, sr=sr, hop_length=hop_size, n_fft=block_size)
     for i in range(spec_cont.shape[0]):
         extracted_feature = spec_cont[i, :].flatten()
-        feature_data[f"timbre_avg_spec_cont_{i+1}"] = [np.mean(extracted_feature)]
-        feature_data[f"timbre_std_spec_cont_{i+1}"] = [np.std(extracted_feature)]
+        feature_data[f"timbre_avg_spec_cont_{i + 1}"] = [np.mean(extracted_feature)]
+        feature_data[f"timbre_std_spec_cont_{i + 1}"] = [np.std(extracted_feature)]
 
     # spectral flatness
-    spec_flat = feat.spectral_flatness(
-        y=data, hop_length=hop_size, n_fft=block_size
-    ).flatten()
+    spec_flat = feat.spectral_flatness(y=data, hop_length=hop_size, n_fft=block_size).flatten()
     feature_data["timbre_avg_spec_flat"] = [np.mean(spec_flat)]
     feature_data["timbre_std_spec_flat"] = [np.std(spec_flat)]
 
     # spectral rolloff
-    spec_flat = feat.spectral_rolloff(
-        y=data, sr=sr, hop_length=hop_size, n_fft=block_size
-    ).flatten()
+    spec_flat = feat.spectral_rolloff(y=data, sr=sr, hop_length=hop_size, n_fft=block_size).flatten()
     feature_data["timbre_avg_spec_rolloff"] = [np.mean(spec_flat)]
     feature_data["timbre_std_spec_rolloff"] = [np.std(spec_flat)]
 
@@ -102,13 +87,11 @@ def timbre_from_audio(
     mfccs = feat.mfcc(y=data, sr=sr)
     for i in range(mfccs.shape[0]):
         extracted_feature = mfccs[i, :].flatten()
-        feature_data[f"timbre_avg_mfcc_{i+1}"] = [np.mean(extracted_feature)]
-        feature_data[f"timbre_std_mfcc_{i+1}"] = [np.std(extracted_feature)]
+        feature_data[f"timbre_avg_mfcc_{i + 1}"] = [np.mean(extracted_feature)]
+        feature_data[f"timbre_std_mfcc_{i + 1}"] = [np.std(extracted_feature)]
 
     # Zero crossings
-    zero_cross = feat.zero_crossing_rate(
-        y=data, hop_length=hop_size, frame_length=block_size
-    ).flatten()
+    zero_cross = feat.zero_crossing_rate(y=data, hop_length=hop_size, frame_length=block_size).flatten()
     feature_data["timbre_avg_zero_cross"] = [np.mean(zero_cross)]
     feature_data["timbre_std_zero_cross"] = [np.std(zero_cross)]
 
@@ -157,14 +140,14 @@ def timbre_from_audio(
     onsets = es.Onsets()
     envelope = es.Envelope()
     log_attack = es.LogAttackTime(sampleRate=sr)
-    weights = np.ones(3) * 1/3
+    weights = np.ones(3) * 1 / 3
     weights = weights.astype(np.float32)
     detections = detections.astype(np.float32)
     onsets_out = onsets(detections, weights)
 
     for onset_time in onsets_out:
         onset_sample = onset_time * sr
-        frame = data[int(onset_sample):int(onset_sample + block_size)]
+        frame = data[int(onset_sample) : int(onset_sample + block_size)]
         data_envel = envelope(frame)
         log_attack_times.append(log_attack(data_envel)[0])
 
@@ -177,9 +160,8 @@ def timbre_from_audio(
     feature_data["timbre_std_odd_even_ratio"] = [np.std(odd_to_even_ratios)]
     # feature_data["timbre_odd_even_ratio_clipped"] = [clipped]
 
-
     # Save attack times
-    attack_times = [10 ** val for val in log_attack_times]
+    attack_times = [10**val for val in log_attack_times]
     log_attack_times = np.array(log_attack_times)
     attack_times = np.array(attack_times)
 

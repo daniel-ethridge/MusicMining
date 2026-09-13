@@ -64,7 +64,7 @@ def melody_from_audio(data, sr, *, hop_size=1024, block_size=4096):
     melody = pitch_filter(pitch_values, pitch_confidence)
     melody_clean = [val for val in melody if val > 0]
     if len(melody_clean) > 0:
-        melody_cents = [1200 * np.log2(val/261.63) for val in melody_clean]
+        melody_cents = [1200 * np.log2(val / 261.63) for val in melody_clean]
         feature_data["melody_avg_f0_cents_midCref"] = [np.mean(melody_cents)]
         feature_data["melody_std_f0_cents_midCref"] = [np.std(melody_cents)]
     else:

@@ -8,6 +8,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.ruff]
 line-length=119
+exclude = [
+    "tests"
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "S", "D", "W", "I", "PYI", "Q", "B", "SIM", "RUF", "TC", "NPY"]
@@ -21,6 +24,12 @@ ignore = [
     "D415",  # Relax on the first line punctuation
 ]
 
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[tool.ruff.lint.per-file-ignores]
+"**/__init__.py" = ["F401"]
+
 [tool.numpydoc_validation]
 checks = [
     "all",
@@ -30,4 +39,7 @@ checks = [
     "SS03",  # Relax on the first line punctuation
     "PR09",  # Descriptions should finish with a period, but not totally important
     "RT05",  # Relax on punctuation on return descriptions
+    "SS02"   # Don't need capital letters enforced in module summaries
 ]
+
+exclude_files = ["tests/.*"]

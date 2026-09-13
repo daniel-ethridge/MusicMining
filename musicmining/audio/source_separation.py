@@ -11,14 +11,12 @@ from torchaudio.transforms import Fade
 
 
 class Stem(Flag):
-
     """Bit mask class to handle different stem combinations. Stems can be combined with the '|' operator."""
 
     VOCALS = 1 << 0  # 0001 (1)
-    DRUMS  = 1 << 1   # 0010 (2)
-    BASS   = 1 << 2    # 0100 (4)
-    OTHER  = 1 << 3   # 1000 (8)
-
+    DRUMS = 1 << 1  # 0010 (2)
+    BASS = 1 << 2  # 0100 (4)
+    OTHER = 1 << 3  # 1000 (8)
 
     def english_map(combo: int) -> Tuple[str, int]:
         """
@@ -53,13 +51,15 @@ class Stem(Flag):
 Functions '_source_separation()' and 'separate_sources() adapted from PyTorch documentation.'
 https://docs.pytorch.org/audio/stable/tutorials/hybrid_demucs_tutorial.html
 """
+
+
 def _source_separation(
-    model : torch.Module,
+    model: torch.Module,
     audio: np.ndarray,
     sr: float,
-    segment: float=10.0,
-    overlap: float=0.1,
-    device: Optional[str]=None,
+    segment: float = 10.0,
+    overlap: float = 0.1,
+    device: Optional[str] = None,
 ):
     """
     Apply model to a given mixture. Use fade, and add segments together in order to add model segment by segment.
@@ -115,13 +115,14 @@ def _source_separation(
 
 
 def separate_sources(
-        *,
-        audio: np.ndarray,
-        sr: float,
-        segment=10,
-        overlap=0.1,
-        stem_combinations: Optional[List[Stem]] = None,
-        device: Optional[torch.device | str] = None) -> dict:
+    *,
+    audio: np.ndarray,
+    sr: float,
+    segment=10,
+    overlap=0.1,
+    stem_combinations: Optional[List[Stem]] = None,
+    device: Optional[torch.device | str] = None,
+) -> dict:
     """
     Separate a file into constituent parts.
 
@@ -154,7 +155,6 @@ def separate_sources(
     """
     if stem_combinations is None:
         stem_combinations = [Stem.VOCALS, Stem.DRUMS, Stem.OTHER, Stem.BASS]
-
 
     for combo in stem_combinations:
         if combo == 0:
@@ -200,7 +200,7 @@ def separate_sources(
         "drums": audios["drums"].cpu().numpy(),
         "bass": audios["bass"].cpu().numpy(),
         "other": audios["other"].cpu().numpy(),
-        "vocals": audios["vocals"].cpu().numpy()
+        "vocals": audios["vocals"].cpu().numpy(),
     }
 
     # Save split audio

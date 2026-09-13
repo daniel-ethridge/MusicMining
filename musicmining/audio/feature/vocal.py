@@ -7,11 +7,7 @@ import pandas as pd
 
 
 def vocal_from_file(
-    file_path: str,
-    sr : int,
-    *,
-    hop_size: Optional[int]=None,
-    block_size: Optional[int]=None
+    file_path: str, sr: int, *, hop_size: Optional[int] = None, block_size: Optional[int] = None
 ) -> pd.DataFrame:
     """
     Extract vocal features from a file.
@@ -35,9 +31,7 @@ def vocal_from_file(
         Vocal features out.
     """
     smile = opensmile.Smile(
-        feature_set = opensmile.FeatureSet.eGeMAPSv02,
-        feature_level = opensmile.FeatureLevel.Functionals,
-        sampling_rate=sr
+        feature_set=opensmile.FeatureSet.eGeMAPSv02, feature_level=opensmile.FeatureLevel.Functionals, sampling_rate=sr
     )
 
     processed = smile.process_file(file_path)

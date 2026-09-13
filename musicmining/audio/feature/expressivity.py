@@ -1,3 +1,10 @@
+"""
+Extract expressivity features from essentia.
+
+Currently, this module extracts aspects of vibrato from the audio. Average and spread measurements of both vibrato
+speed and depth are calculated.
+"""
+
 import essentia.standard as es
 import numpy as np
 import pandas as pd
@@ -6,15 +13,53 @@ from musicmining.audio import io
 
 
 def expressivity_from_file(file_path, sr, *, hop_size=1024, block_size=4096):
+    """
+    Extract expressivity features from a file.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to an audio file.
+    sr : int
+        Target sample rate of audio
+    hop_size : int, optional
+        STFT hop length for librosa and essentia methods.
+    block_size : int, optional
+        FFT window size for librosa and essentia methods.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Expressivity features out.
+    """
     data, sr = io.load(file_path, sr=sr)
     return expressivity_from_audio(data, sr, hop_size=hop_size, block_size=block_size)
 
 
 def expressivity_from_audio(data, sr, *, hop_size=1024, block_size=4096):
+    """
+    Extract expressivity features from audio.
+
+    Parameters
+    ----------
+    data : np.ndarray
+        Audio data
+    sr : int
+        Sample rate of the audio
+    hop_size : int, optional
+        STFT hop length for librosa and essentia methods. Defaults to 1024.
+    block_size : int, optional
+        FFT window size for librosa and essentia methods. Defaults to 4096.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Expressivity features out.
+    """
     # Create feature dictionary
     feature_data = {}
 
-    # Read file 
+    # Read file
     loudness = es.EqualLoudness(sampleRate=sr)
     data = loudness(data)
 

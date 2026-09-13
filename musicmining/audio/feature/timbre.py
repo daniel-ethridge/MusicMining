@@ -1,24 +1,62 @@
-import librosa.feature as feat
-from musicmining.audio import io
-import numpy as np
+"""Extract timbre features from essentia and librosa."""
+
 import essentia.standard as es
+import librosa.feature as feat
+import numpy as np
 import pandas as pd
 
+from musicmining.audio import io
 
 
-def timbre_from_file(file_path, hop_size=1024, block_size=4096):
-    audio, sr = io.load(file_path)
-    return timbre_from_audio(audio, sr, hop_size=hop_size, block_size=block_size)
+def timbre_from_file(file_path: str, sr: int, hop_size=1024, block_size=4096):
+    """
+    Extract timbred features from a file.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to an audio file.
+    sr : int
+        Target sample rate of audio
+    hop_size : int, optional
+        STFT hop length for librosa and essentia methods.
+    block_size : int, optional
+        FFT window size for librosa and essentia methods.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Timbre features out.
+    """
+    audio, rate = io.load(file_path, sr=sr)
+    return timbre_from_audio(audio, rate, hop_size=hop_size, block_size=block_size)
 
 
 def timbre_from_audio(
-        data,
-        sr,
+        data: np.ndarray,
+        sr: int,
         *,
-        hop_size=1024,
-        block_size=4096):
-    
+        hop_size: int=1024,
+        block_size: int=4096):
+    """
+    Extract timbre features from audio.
 
+    Parameters
+    ----------
+    data : np.ndarray
+        Audio data
+    sr : int
+        Sample rate of the audio
+    hop_size : int, optional
+        STFT hop length for librosa and essentia methods. Defaults to 1024.
+    block_size : int, optional
+        FFT window size for librosa and essentia methods. Defaults to 4096.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Timbre features out.
+    """
     ## Extract features ##
     # Create dictionary
     feature_data = {}
@@ -36,7 +74,7 @@ def timbre_from_audio(
     ).flatten()
     feature_data["timbre_avg_spec_band"] = [np.mean(spec_band)]
     feature_data["timbre_std_spec_band"] = [np.std(spec_band)]
-            
+
     # spectral contrast
     spec_cont = feat.spectral_contrast(
         y=data, sr=sr, hop_length=hop_size, n_fft=block_size
@@ -89,9 +127,9 @@ def timbre_from_audio(
     odd_even = es.OddToEvenHarmonicEnergyRatio()
 
     # Attack time -- create objects
-    onset_d1 = es.OnsetDetection(sampleRate=sr, method='hfc')
-    onset_d2 = es.OnsetDetection(sampleRate=sr, method='flux')
-    onset_d3 = es.OnsetDetection(sampleRate=sr, method='rms')
+    onset_d1 = es.OnsetDetection(sampleRate=sr, method="hfc")
+    onset_d2 = es.OnsetDetection(sampleRate=sr, method="flux")
+    onset_d3 = es.OnsetDetection(sampleRate=sr, method="rms")
 
     # get frames
     odd_to_even_ratios = []
@@ -101,21 +139,21 @@ def timbre_from_audio(
         frames.append(frame)
 
     detections = np.zeros((3, len(frames)))
-    clipped = False
+    # clipped = False
     for i, frame in enumerate(frames):
         # even odd
         spectrum_out = spectrum(frame)
         frequencies, magnitudes = spectral_peaks(spectrum_out)
         harm_frqs, harm_mags = harmonic_peaks(frequencies, magnitudes, corrected_pitches[i])
         odd_to_even_ratios.append(odd_even(harm_frqs, harm_mags))
-        if odd_to_even_ratios[-1] == 1000:
-            clipped = True
+        # if odd_to_even_ratios[-1] == 1000:
+        #     clipped = True
 
         # onset detection
         detections[0][i] = onset_d1(spectrum_out, spectrum_out)
         detections[1][i] = onset_d2(spectrum_out, spectrum_out)
         detections[2][i] = onset_d3(spectrum_out, spectrum_out)
-    
+
     onsets = es.Onsets()
     envelope = es.Envelope()
     log_attack = es.LogAttackTime(sampleRate=sr)

@@ -1,19 +1,50 @@
-from librosa.feature import tempo
+"""Extract rhythm features from essentia and librosa."""
+
 import essentia.standard as es
-from librosa.onset import onset_strength
-import pandas as pd
 import numpy as np
+import pandas as pd
+from librosa.feature import tempo
+from librosa.onset import onset_strength
 
 from musicmining.audio import io
 
 
 def rhythm_from_file(file_path, sr):
+    """
+    Extract rhythm features from a file.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to an audio file.
+    sr : int
+        Target sample rate of audio
+
+    Returns
+    -------
+    pandas.DataFrame
+        Rhythm features out.
+    """
     data, rate = io.load(file_path, sr=sr)
     return rhythm_from_audio(data, rate)
 
 
 def rhythm_from_audio(data, sr):
+    """
+    Extract rhythm features from audio.
 
+    Parameters
+    ----------
+    data : np.ndarray
+        Audio data
+    sr : int
+        Sample rate of the audio
+
+    Returns
+    -------
+    pandas.DataFrame
+        Rhythm features out.
+    """
     feature_data = {}
 
     # First prediction
@@ -29,4 +60,3 @@ def rhythm_from_audio(data, sr):
     feature_data["rhythm_std_tempo_estimates"] = std_estimates
 
     return pd.DataFrame(feature_data)
-    

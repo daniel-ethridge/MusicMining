@@ -1,0 +1,33 @@
+[project]
+name = "musicmining"
+version = "0.1.0"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length=119
+
+[tool.ruff.lint]
+select = ["E", "F", "S", "D", "W", "I", "PYI", "Q", "B", "SIM", "RUF", "TC", "NPY"]
+ignore = [
+    "D203",  # Don't need blank line before docstring
+    "D204",  # Don't need blank line after docstring either
+    "D211",  # Blank line before class
+    "D212",  # Multi-line docstring summary first line start
+    "D400",  # Relax on the first line punctuation
+    "D413",  # Blank line at end of docstring is unecessary
+    "D415",  # Relax on the first line punctuation
+]
+
+[tool.numpydoc_validation]
+checks = [
+    "all",
+    "ES01",  # No extended summary
+    "EX01",  # Don't enforce 'Examples section
+    "SA01",  # Don't enforce 'See Also' section
+    "SS03",  # Relax on the first line punctuation
+    "PR09",  # Descriptions should finish with a period, but not totally important
+    "RT05",  # Relax on punctuation on return descriptions
+]

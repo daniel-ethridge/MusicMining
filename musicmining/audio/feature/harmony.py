@@ -1,16 +1,52 @@
-import numpy as np
-from musicmining.audio import io
+"""Extract harmony features from essentia."""
+
 import essentia.standard as es
+import numpy as np
 import pandas as pd
+
+from musicmining.audio import io
 
 
 def harmony_from_file(file_path, sr, *, block_size=4096):
+    """
+    Extract harmony features from a file.
+
+    Parameters
+    ----------
+    file_path : str
+        Path to an audio file.
+    sr : int
+        Target sample rate of audio
+    block_size : int, optional
+        FFT window size for librosa and essentia methods.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Harmony features out.
+    """
     data, sr = io.load(file_path, sr=sr)
     return harmony_from_audio(data, sr, block_size=block_size)
-    
+
 
 def harmony_from_audio(data, sr, *, block_size=4096):
-            
+    """
+    Extract harmony features from audio.
+
+    Parameters
+    ----------
+    data : np.ndarray
+        Audio data
+    sr : int
+        Sample rate of the audio
+    block_size : int, optional
+        FFT window size for librosa and essentia methods. Defaults to 4096.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Harmony features out.
+    """
     if len(data) % 2 != 0:
         data = np.pad(data, (0, 1))
     # data = preprocess_audio(data)
@@ -49,7 +85,7 @@ def harmony_from_audio(data, sr, *, block_size=4096):
     # print(inharmonicities)
 
     # # Save inharmonicities
-    # inharmonicities = np.array(inharmonicities)     
+    # inharmonicities = np.array(inharmonicities)
     # feature_data["harmony_avg_inharmonicity"] = [np.mean(inharmonicities)]
     # feature_data["harmony_std_inharmonicity"] = [np.std(inharmonicities)]
 
@@ -74,7 +110,7 @@ def harmony_from_audio(data, sr, *, block_size=4096):
 #     hop_size,
 #     block_size
 # ) -> pd.DataFrame:
-    
+
 #     # Get audio
 #     sr, data = wavread(filename=file_path)
 #     if len(data) % 2 != 0:
@@ -115,7 +151,7 @@ def harmony_from_audio(data, sr, *, block_size=4096):
 #     # print(inharmonicities)
 
 #     # # Save inharmonicities
-#     # inharmonicities = np.array(inharmonicities)     
+#     # inharmonicities = np.array(inharmonicities)
 #     # feature_data["harmony_avg_inharmonicity"] = [np.mean(inharmonicities)]
 #     # feature_data["harmony_std_inharmonicity"] = [np.std(inharmonicities)]
 

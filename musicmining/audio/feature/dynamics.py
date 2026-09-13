@@ -1,18 +1,57 @@
-from musicmining.audio import io
+"""Extract dynamics features from librosa and essentia."""
+
+import essentia.standard as es
 import librosa.feature as feat
 import numpy as np
 import pandas as pd
-import essentia.standard as es
 
+from musicmining.audio import io
 
 
 def dynamics_from_file(file_path, sr, *, hop_size=1024, block_size=4096):
+        """
+        Extract dynamics features from a file.
+
+        Parameters
+        ----------
+        file_path : str
+            Path to an audio file.
+        sr : int
+            Target sample rate of audio
+        hop_size : int, optional
+            STFT hop length for librosa and essentia methods.
+        block_size : int, optional
+            FFT window size for librosa and essentia methods.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dynamics features out.
+        """
         data, sr = io.load(file_path, sr=sr)
         return dynamics_from_audio(data, sr, hop_size=hop_size, block_size=block_size)
 
 
 def dynamics_from_audio(data, sr, *, hop_size=1024, block_size=4096):
+        """
+        Extract dynamics features from audio.
 
+        Parameters
+        ----------
+        data : np.ndarray
+            Audio data
+        sr : int
+            Sample rate of the audio
+        hop_size : int, optional
+            STFT hop length for librosa and essentia methods. Defaults to 1024.
+        block_size : int, optional
+            FFT window size for librosa and essentia methods. Defaults to 4096.
+
+        Returns
+        -------
+        pandas.DataFrame
+            Dynamics features out.
+        """
         feature_data = {}
         feat_rms = feat.rms(y=data, frame_length=block_size, hop_length=hop_size).flatten()
         max_rms = np.max(feat_rms)
@@ -44,7 +83,3 @@ def dynamics_from_audio(data, sr, *, hop_size=1024, block_size=4096):
         feature_data["dynamics_dynamic_complexity_loudness_db"] = [loudness_out]
 
         return pd.DataFrame(feature_data)
-
-
-def dynamics_feats():
-    pass

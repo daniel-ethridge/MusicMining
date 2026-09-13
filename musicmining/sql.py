@@ -17,9 +17,8 @@ def save(
 
 def load(*, path: str, table: str, **kwargs) -> pd.DataFrame:
     engine = create_engine(f'sqlite:///{path}')
-
     with engine.connect() as conn:
-        data = pd.read_sql(table, conn, **kwargs)
+        data = pd.read_sql_table(table, conn, **kwargs)
 
     return data
 

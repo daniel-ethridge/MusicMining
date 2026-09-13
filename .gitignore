@@ -8,3 +8,7 @@ scratch.*
 /scratch
 docs/
 emotion-quant/
+requirements.txt
+*.egg-info/
+dist/
+build/

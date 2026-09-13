@@ -1,21 +1,28 @@
+"""I/O for audio files"""
+
 import librosa
 import numpy as np
 from scipy.io.wavfile import write as wavwrite
 
 
-def load(path, *, to_mono_float32=True, **kwargs):
+def load(path: str, *, to_mono_float32: bool=True, **kwargs):
     """
     Load an audio file.
-    
-    Args:
-        path: Path to audio file.
-        to_float32: Convert to float32 format. Defaults to True.
-        **kwargs: Additional arguments passed to librosa.load.
-    
-    Returns:
-        tuple: (audio_data, sample_rate)
-    """
 
+    Parameters
+    ----------
+    path : str
+        Path to audio file.
+    to_mono_float32 : bool, optional
+        Convert to float32 format and to mono. Defaults to True.
+    **kwargs
+        Additional arguments passed to librosa.load.
+
+    Returns
+    -------
+    tuple
+        (audio data, sample rate)
+    """
     # Initial load
     data, sr = librosa.load(path, **kwargs)
 
@@ -34,18 +41,22 @@ def load(path, *, to_mono_float32=True, **kwargs):
     elif (data.dtype == np.int32):
         data /= (1 << 31)
 
-    # return 
+    # return
     data = np.float32(data)
     return data, sr
 
 
-def write_wav(filename, rate: int, data: np.ndarray):
+def write_wav(filename: str, sr: int, data: np.ndarray):
     """
-    Wrapper around scipy.io.wavfile.write.
+    Call scipy.io.wavfile.write.
 
-    Parameters:
-        filename: Output wav file.
-        rate: The sample rate (in samples/sec).
-        data: A 1-D or 2-D NumPy array of either integer or float data-type.
+    Parameters
+    ----------
+    filename : str
+        Output wav file.
+    sr : int
+        The sample rate (in samples/sec).
+    data : numpy ndarray
+        A 1-D or 2-D NumPy array of either integer or float data-type.
     """
-    wavwrite(filename, rate, data)
+    wavwrite(filename, sr, data)

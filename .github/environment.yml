@@ -4,7 +4,7 @@ channels:
   - default
 dependencies:
   # required
-  - essentia==2.1b6.dev1389
+  - essentia==2.1
   - librosa==1.0.0
   - numpy==2.5.3
   - opensmile==2.6.0

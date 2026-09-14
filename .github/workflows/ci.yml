@@ -18,10 +18,10 @@ jobs:
       envfile: ".github/environment.yml"
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Setup Environment via Conda
-      uses: conda-incubator/setup-miniconda@v6
+      uses: conda-incubator/setup-miniconda@v4
       with:
         activate-environment: test
         environment-file: ${{ env.envfile }}

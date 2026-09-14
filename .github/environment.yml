@@ -11,7 +11,7 @@ dependencies:
   - pip
 
   - pip:
-      - essentia==2.1b6.dev0
+      - essentia==2.1-beta6-dev
       - librosa==1.0.0
       - opensmile==2.6.0
       - torch==2.5.1

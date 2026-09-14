@@ -3,14 +3,17 @@ channels:
   - conda-forge
   - default
 dependencies:
-  # required
-  - essentia==2.1
-  - librosa==1.0.0
-  - numpy==2.5.3
-  - opensmile==2.6.0
-  - pandas==3.0.5
-  - scipy==1.18.1
-  - sqlalchemy==2.0.52
+  - python=3.12
+  - numpy>=2.1.0
+  - scipy>=1.15.0
+  - pandas>=2.2.0
+  - sqlalchemy>=2.0.0
   - pytest
-  - torch==2.13.0
-  - torchaudio==2.11.0
+  - pip
+
+  - pip:
+      - essentia==2.1
+      - librosa==1.0.0
+      - opensmile==2.6.0
+      - torch==2.5.1
+      - torchaudio==2.5.1

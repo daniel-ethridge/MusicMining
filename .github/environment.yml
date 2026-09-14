@@ -1,0 +1,16 @@
+name: test
+channels:
+  - conda-forge
+  - default
+dependencies:
+  # required
+  - essentia==2.1b6.dev1389
+  - librosa==1.0.0
+  - numpy==2.5.3
+  - opensmile==2.6.0
+  - pandas==3.0.5
+  - scipy==1.18.1
+  - sqlalchemy==2.0.52
+  - pytest
+  - torch==2.13.0
+  - torchaudio==2.11.0

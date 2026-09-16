@@ -26,12 +26,6 @@ jobs:
         with:
           python-version-file: 'pyproject.toml'
 
-      - name: Test echo
-        env:
-          MY_VERSION: ${{ steps.python-setup.outputs.python-version }}
-        run: |
-          echo "$MY_VERSION"
-
       - name: Bump Version and Push Tag
         uses: laputansoft/github-tag-action@v4.6
         with:

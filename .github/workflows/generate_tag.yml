@@ -27,7 +27,9 @@ jobs:
           python-version-file: 'pyproject.toml'
 
       - name: Test echo
-        run: echo "Hello world"
+        run: |
+          echo ${{ steps.python-setup.outputs.python-version }}
+          echo git describe --tags --abbrev=0
 
       - name: Bump Version and Push Tag
         uses: laputansoft/github-tag-action@v4.6

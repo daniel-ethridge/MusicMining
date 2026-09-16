@@ -30,6 +30,7 @@ jobs:
         run: |
           TARGET_TAG="${{ steps.python-setup.outputs.python-version }}"
 
+          git fetch --tags
           # Check if the tag exists either locally or on the remote origin
           if git rev-parse "refs/tags/$TARGET_TAG" >/dev/null 2>&1; then
             echo "::error::Tag '$TARGET_TAG' already exists in the repository! Failing workflow to prevent duplicates."

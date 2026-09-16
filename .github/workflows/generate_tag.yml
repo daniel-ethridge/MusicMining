@@ -30,7 +30,7 @@ jobs:
         env:
           MY_VERSION: ${{ steps.python-setup.outputs.python-version }}
         run: |
-          echo "${{ MY_VERSION}} "
+          echo "${{ MY_VERSION }} "
 
       - name: Bump Version and Push Tag
         uses: laputansoft/github-tag-action@v4.6

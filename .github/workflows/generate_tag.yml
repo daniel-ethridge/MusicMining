@@ -29,7 +29,9 @@ jobs:
       - name: Check if tag already exists
         run: |
           TARGET_TAG="${{ steps.python-setup.outputs.python-version }}"
+          echo ${TARGET_TAG}
 
+          echo git describe --tags $(git rev-list --tags --max-count=1)
           git fetch --tags
           # Check if the tag exists either locally or on the remote origin
           if git describe --tags $(git rev-list --tags --max-count=1); then

@@ -26,41 +26,8 @@ jobs:
         with:
           python-version-file: 'pyproject.toml'
 
-      - name: Read Project Version from pyproject.toml
-        id: get-version
-        run: |
-          # Use a quick Python one-liner to parse the actual project version out of pyproject.toml
-          PROJECT_VERSION=$(python -c "
-          import tomllib
-          with open('pyproject.toml', 'rb') as f:
-              data = tomllib.load(f)
-          # Tries to find version under [project], falls back to [tool.poetry] if using Poetry
-          print(data.get('project', {}).get('version', data.get('tool', {}).get('poetry', {}).get('version', '')))
-          ")
-
-          # Clean spaces and save to GitHub Outputs
-          PROJECT_VERSION=$(echo "$PROJECT_VERSION" | tr -d '[:space:]')
-          echo "version=${PROJECT_VERSION}" >> $GITHUB_OUTPUT
-
-      - name: Check if tag already exists
-        run: |
-          git fetch --tags
-
-          # Fetch the project version we parsed in the previous step
-          TARGET_TAG="${{ steps.get-version.outputs.version }}"
-          echo "Target project version: '$TARGET_TAG'"
-
-          if [ -z "$TARGET_TAG" ]; then
-            echo "::error::Could not find a valid version string in pyproject.toml!"
-            exit 1
-          fi
-
-          if git rev-parse "refs/tags/$TARGET_TAG" >/dev/null 2>&1; then
-            echo "::error::Tag '$TARGET_TAG' already exists in the repository! Failing workflow to prevent duplicates."
-            exit 1
-          else
-            echo "✅ Validation passed. Tag '$TARGET_TAG' is unique."
-          fi
+      - name: Test echo
+        run: echo "Hello world"
 
       - name: Bump Version and Push Tag
         uses: laputansoft/github-tag-action@v4.6

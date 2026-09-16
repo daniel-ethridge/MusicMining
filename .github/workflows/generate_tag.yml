@@ -7,6 +7,10 @@ on:
     branches:
     - main
 
+  # Only for testing
+  push:
+    - develop
+
 jobs:
   build:
     runs-on: ubuntu-latest

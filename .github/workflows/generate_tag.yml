@@ -9,6 +9,7 @@ on:
 
   # Only for testing
   push:
+    branches:
     - develop
 
 jobs:

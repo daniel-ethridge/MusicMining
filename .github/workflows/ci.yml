@@ -4,15 +4,13 @@ on:
   push:
     branches:
       - develop
-      - main
   pull_request:
     branches:
       - main
-      - develop
 
 jobs:
   test:
-    name: Python 3.12
+    name: Python 3.12 Tests
     runs-on: ubuntu-latest
     env:
       envfile: ".github/environment.yml"
@@ -21,7 +19,7 @@ jobs:
     - uses: actions/checkout@v6
 
     - name: Setup Environment via Conda
-      uses: conda-incubator/setup-miniconda@v4
+      uses: conda-incubator/setup-miniconda@94
       with:
         activate-environment: test
         environment-file: ${{ env.envfile }}

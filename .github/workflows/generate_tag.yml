@@ -31,4 +31,3 @@ jobs:
         with:
           github_token: ${{ env.github-token }}
           tag: ${{ steps.python-setup.outputs.python-version }}
-          create_annotated_tag: true

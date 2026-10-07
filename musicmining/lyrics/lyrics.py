@@ -1,3 +1,5 @@
+"""Functionality for retrieving lyrics from the Genius API and processing them"""
+
 import re
 from typing import Optional
 
@@ -36,18 +38,69 @@ def _contraction_to_words(contraction: str):
 
 
 def to_count_matrix(lyrics: list[str], **kwargs) -> pd.DataFrame:
+    """
+    Create a CountVectorizer matrix.
+
+    Parameters
+    ----------
+    lyrics : list[str]
+        A list of song lyrics. Each song's lyrics should be one string in the list.
+    **kwargs
+        Keyword arguments passed to sklearn.feature_extraction.text.CountVectorizer
+
+    Returns
+    -------
+    pd.DataFrame
+        A dataframe of word counts for each song's lyrics.
+    """
     count_vec = CountVectorizer(**kwargs)
     out = count_vec.fit_transform(lyrics)
     return pd.DataFrame(out.toarray(), columns=count_vec.get_feature_names_out())
 
 
 def to_tfidf_matrix(lyrics: list[str], **kwargs) -> pd.DataFrame:
+    """
+    Create a TfidfVectorizer matrix.
+
+    Parameters
+    ----------
+    lyrics : list[str]
+        A list of song lyrics. Each song's lyrics should be one string in the list.
+    **kwargs
+        Keyword arguments passed to sklearn.feature_extraction.text.TfidfVectorizer
+
+    Returns
+    -------
+    pd.DataFrame
+        A dataframe of normalized frequency values for each song's lyrics.
+    """
     tfidf_vec = TfidfVectorizer(**kwargs)
     out = tfidf_vec.fit_transform(lyrics)
     return pd.DataFrame(out.toarray(), columns=tfidf_vec.get_feature_names_out())
 
 
 def get_lyrics_from_genius(access_token: str, song: str, artist: str) -> str | None:
+    """
+    Retrieve lyrics from Genius.
+
+    Call the Genius API to get the lyrics for a song. This function is subject to Genius' rate limiting, information
+    about which can be found in their API documentation.
+
+    Parameters
+    ----------
+    access_token : str
+        An access token provided by Genius.com. This can be acquired through making an account with their developer
+        portal.
+    song : str
+        The name of the song.
+    artist : str
+        The name of the artist.
+
+    Returns
+    -------
+    str | None
+        If a song is found, the raw lyrics are returned. Otherwise, None is returned.
+    """
     genius = Genius(access_token)
     song_obj = genius.search_song(song, artist)
 
@@ -57,7 +110,26 @@ def get_lyrics_from_genius(access_token: str, song: str, artist: str) -> str | N
     return song_obj.lyrics
 
 
-def clean_genius_lyrics(lyrics: str, stopwords: Optional[list[str]] = None):
+def clean_genius_lyrics(lyrics: str, stopwords: Optional[list[str]] = None) -> str:
+    """
+    Clean the raw lyrics returned from the Genius API.
+
+    Removes bracketed words (e.g. [Intro], [Chorus]), numbers, non-words/spaces (i.e. punctuation), extra white space
+    capital letters, and stopwords (if provided). Also converts select contractions to actual words and lemmatizes each
+    word.
+
+    Parameters
+    ----------
+    lyrics : str
+        The raw lyrics returned from the Genius API
+    stopwords : Optional[list[str]], optional
+        Meaningless words (e.g. a, but, or, the, etc.) to remove, by default None
+
+    Returns
+    -------
+    str
+        The processed lyrics
+    """
     # remove words in brackets, numbers, and non-words/spaces except apostrophes
     lyrics = re.sub(r"\[(.*?)\]|([0-9])|(\n)|[^\w\s\']", "", lyrics)
 

@@ -12,12 +12,14 @@ dependencies = [
     "pandas==3.0.5",
     "scipy==1.18.1",
     "sqlalchemy==2.0.52",
+    "lyricsgenius==3.14.0"
 ]
 dynamic = ["version"]
 
 [project.optional-dependencies]
 test = [
-    "pytest>=9.1.1",
+    "pytest==9.1.1",
+    "python-dotenv==1.2.4"
 ]
 source-separation = [
     "torch>=2.13.0",
